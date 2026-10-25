@@ -1,12 +1,10 @@
 // ========================================================
 // ROBS COOKIES
-// Cart, checkout ke Google Apps Script, navigasi,
+// Keranjang, checkout melalui Vercel API, navigasi,
 // FAQ, scroll reveal, dan efek visual.
 // ========================================================
 
-// Ganti dengan URL Web App Apps Script Anda yang berakhiran /exec.
-const CHECKOUT_ENDPOINT =
-  "/api/checkout";
+const CHECKOUT_ENDPOINT = "/api/checkout";
 
 let cartItems = [];
 
@@ -79,8 +77,8 @@ function initCartDrawer() {
     document.body.style.overflow = "";
   }
 
-  cartBtn?.addEventListener("click", openCart);
-  closeBtn?.addEventListener("click", closeCart);
+  if (cartBtn) cartBtn.addEventListener("click", openCart);
+  if (closeBtn) closeBtn.addEventListener("click", closeCart);
 
   overlay.addEventListener("click", event => {
     if (event.target === overlay) closeCart();
@@ -92,8 +90,19 @@ function initCartDrawer() {
 }
 
 // ========================================================
-// Checkout dengan format request Apps Script:
-// { action: "createOrder", order: { customer, buyerEmail, items } }
+// Checkout melalui endpoint API Vercel.
+//
+// Body yang dikirim ke /api/checkout:
+// {
+//   action: "createOrder",
+//   order: {
+//     customer: "...",
+//     buyerEmail: "...",
+//     items: [{ name: "...", qty: 1 }]
+//   }
+// }
+//
+// api/checkout.js meneruskan objek ini ke Apps Script.
 // ========================================================
 
 function initCheckoutForm() {
@@ -112,14 +121,6 @@ function initCheckoutForm() {
     }
 
     if (!form.reportValidity()) return;
-
-    if (CHECKOUT_ENDPOINT.includes("ID_DEPLOYMENT_ANDA")) {
-      showCheckoutMessage(
-        "Isi URL Web App Apps Script di CHECKOUT_ENDPOINT pada script.js.",
-        "error"
-      );
-      return;
-    }
 
     const formData = new FormData(form);
 
@@ -150,18 +151,14 @@ function initCheckoutForm() {
     showCheckoutMessage("", "");
 
     try {
-      /*
-       * Apps Script Web App tidak menyediakan endpoint OPTIONS khusus.
-       * text/plain membantu browser mengirim POST tanpa preflight CORS.
-       * Isi request tetap JSON dan dibaca melalui postData.contents.
-       */
       const response = await fetch(CHECKOUT_ENDPOINT, {
         method: "POST",
         headers: {
-          "Content-Type": "text/plain;charset=utf-8"
+          "Content-Type": "application/json"
         },
-        body: JSON.stringify(payload),
-        redirect: "follow"
+
+        // Jangan JSON.stringify dua kali.
+        body: JSON.stringify(payload)
       });
 
       const responseText = await response.text();
@@ -171,7 +168,7 @@ function initCheckoutForm() {
         result = JSON.parse(responseText);
       } catch {
         throw new Error(
-          "Respons Apps Script tidak terbaca. Periksa URL dan akses deployment."
+          "Respons server tidak valid. Periksa konfigurasi endpoint Vercel."
         );
       }
 
@@ -214,7 +211,7 @@ function initCheckoutForm() {
       showCheckoutMessage(
         error && error.message
           ? error.message
-          : "Tidak dapat menghubungi Apps Script. Silakan coba lagi.",
+          : "Tidak dapat menghubungi server. Silakan coba lagi.",
         "error"
       );
     } finally {
@@ -379,7 +376,7 @@ function initHero3DParallax() {
 }
 
 // ========================================================
-// Efek tilt kartu produk
+// Efek tilt kartu
 // ========================================================
 
 function initCard3DTilt() {
@@ -426,6 +423,10 @@ function initCard3DTilt() {
 
       if (imageBox) {
         imageBox.style.transform = "translateZ(0)";
+      }
+
+      if (glare) {
+        glare.style.background = "transparent";
       }
     });
   });
