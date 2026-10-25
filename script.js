@@ -7,9 +7,58 @@
 
 const CHECKOUT_ENDPOINT = "/api/checkout";
 const PRODUCTS_ENDPOINT = "/api/products";
+const FALLBACK_PRODUCTS_ENDPOINT = "/api/product";
+
+const DEFAULT_PRODUCTS = [
+  {
+    name: "Original Classic Cookie",
+    category: "Original Butter",
+    price: 5000,
+    stock: 50,
+    active: true,
+    image: "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&w=400&q=80"
+  },
+  {
+    name: "Double Choco Melt",
+    category: "Chocolate",
+    price: 6000,
+    stock: 50,
+    active: true,
+    image: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=400&q=80"
+  },
+  {
+    name: "Red Velvet Creamy",
+    category: "Red Velvet",
+    price: 6000,
+    stock: 50,
+    active: true,
+    image: "https://images.unsplash.com/photo-1616541823729-00fe0aacd32c?auto=format&fit=crop&w=400&q=80"
+  },
+  {
+    name: "Matcha White Choco",
+    category: "Special",
+    price: 6000,
+    stock: 50,
+    active: true,
+    image: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=400&q=80"
+  },
+  {
+    name: "Butter Honey Glaze",
+    category: "Special",
+    price: 5500,
+    stock: 50,
+    active: true,
+    image: "https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?auto=format&fit=crop&w=400&q=80"
+  }
+];
 
 let cartItems = [];
 let productsByName = new Map();
+
+// Seed awal agar data produk langsung siap digunakan
+DEFAULT_PRODUCTS.forEach(product => {
+  productsByName.set(normalizeProductName(product.name), product);
+});
 
 document.addEventListener("DOMContentLoaded", () => {
   initMobileDrawer();
@@ -37,11 +86,8 @@ async function loadProducts() {
     return;
   }
 
-  if (message) message.textContent = "";
-  grid.innerHTML = '<p class="product-loading">Memuat produk...</p>';
-
   try {
-    const response = await fetch(PRODUCTS_ENDPOINT, {
+    let response = await fetch(PRODUCTS_ENDPOINT, {
       method: "GET",
       headers: {
         Accept: "application/json"
@@ -49,13 +95,23 @@ async function loadProducts() {
       cache: "no-store"
     });
 
+    if (response.status === 404) {
+      response = await fetch(FALLBACK_PRODUCTS_ENDPOINT, {
+        method: "GET",
+        headers: {
+          Accept: "application/json"
+        },
+        cache: "no-store"
+      });
+    }
+
+    if (!response.ok) {
+      throw new Error(`Gagal memuat produk (status ${response.status})`);
+    }
+
     const result = await response.json();
 
-    if (
-      !response.ok ||
-      result.ok !== true ||
-      !Array.isArray(result.products)
-    ) {
+    if (result.ok !== true || !Array.isArray(result.products)) {
       throw new Error(result.error || "Produk gagal dimuat dari database.");
     }
 
@@ -71,26 +127,46 @@ async function loadProducts() {
         category: String(product.category || "").trim(),
         price: Number(product.price),
         stock: Math.max(0, Number(product.stock) || 0),
-        active: product.active !== false
+        active: product.active !== false,
+        image: product.image || product.photo || product.img || null
       }));
 
-    productsByName = new Map(
-      products.map(product => [
-        normalizeProductName(product.name),
-        product
-      ])
-    );
-
-    renderProducts(products);
-  } catch (error) {
-    console.error("Gagal memuat produk:", error);
-    grid.innerHTML = "";
-
-    if (message) {
-      message.textContent =
-        error.message || "Produk gagal dimuat. Silakan coba lagi.";
+    if (products.length > 0) {
+      productsByName = new Map(
+        products.map(product => [
+          normalizeProductName(product.name),
+          product
+        ])
+      );
+      renderProducts(products);
     }
+  } catch (error) {
+    console.warn("Sinkronisasi katalog API tidak tersedia, menggunakan katalog default:", error.message);
   }
+}
+
+function getDefaultProductImage(name, index) {
+  const norm = normalizeProductName(name);
+  if (norm.includes("choco") || norm.includes("cokelat")) {
+    return "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=400&q=80";
+  }
+  if (norm.includes("red velvet")) {
+    return "https://images.unsplash.com/photo-1616541823729-00fe0aacd32c?auto=format&fit=crop&w=400&q=80";
+  }
+  if (norm.includes("matcha") || norm.includes("green tea")) {
+    return "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=400&q=80";
+  }
+  if (norm.includes("butter") || norm.includes("honey") || norm.includes("glaze")) {
+    return "https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?auto=format&fit=crop&w=400&q=80";
+  }
+  const fallbackList = [
+    "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&w=400&q=80",
+    "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=400&q=80",
+    "https://images.unsplash.com/photo-1616541823729-00fe0aacd32c?auto=format&fit=crop&w=400&q=80",
+    "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=400&q=80",
+    "https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?auto=format&fit=crop&w=400&q=80"
+  ];
+  return fallbackList[index % fallbackList.length];
 }
 
 function renderProducts(products) {
@@ -100,50 +176,57 @@ function renderProducts(products) {
   if (!grid) return;
 
   if (products.length === 0) {
-    grid.innerHTML = "";
     if (message) message.textContent = "Belum ada produk aktif.";
     return;
   }
 
   if (message) message.textContent = "";
 
-  grid.innerHTML = products.map(product => {
+  grid.innerHTML = products.map((product, index) => {
     const soldOut = product.stock <= 0;
+    const photoUrl = product.image || getDefaultProductImage(product.name, index);
+    const delayClass = index > 0 ? ` delay-${Math.min(index, 5)}` : "";
 
     return `
-      <article class="product-item-card">
-        <div class="prod-img-box" aria-hidden="true"></div>
-
-        <div class="product-card-content">
-          <p class="product-category">${escapeHtml(product.category)}</p>
-          <h3 class="product-name">${escapeHtml(product.name)}</h3>
-          <p class="product-price">${formatRupiah(product.price)}</p>
-
-          <button
-            type="button"
-            class="add-to-cart-btn"
-            data-product-name="${escapeHtml(product.name)}"
-            ${soldOut ? "disabled" : ""}
-            aria-label="${
-              soldOut
-                ? `Stok ${escapeHtml(product.name)} habis`
-                : `Tambah ${escapeHtml(product.name)} ke keranjang`
-            }"
+      <article class="product-item-card reveal-on-scroll${delayClass}">
+        <div class="card-glare"></div>
+        <div class="prod-img-box">
+          <img
+            class="prod-photo"
+            src="${escapeHtml(photoUrl)}"
+            alt="${escapeHtml(product.name)}"
+            loading="lazy"
           >
-            ${soldOut ? "Stok habis" : "+"}
-          </button>
+        </div>
+        <div class="prod-info">
+          <h4>${escapeHtml(product.name)}</h4>
+          <div class="prod-bottom">
+            <span class="prod-price">${formatRupiah(product.price)}</span>
+            <button
+              class="btn-cart-add"
+              type="button"
+              data-product-name="${escapeHtml(product.name)}"
+              ${soldOut ? "disabled" : ""}
+              aria-label="${
+                soldOut
+                  ? `Stok ${escapeHtml(product.name)} habis`
+                  : `Tambah ${escapeHtml(product.name)} ke keranjang`
+              }"
+            >${soldOut ? "✕" : "+"}</button>
+          </div>
         </div>
       </article>
     `;
   }).join("");
 
-  grid.querySelectorAll("[data-product-name]").forEach(button => {
+  grid.querySelectorAll(".btn-cart-add[data-product-name]").forEach(button => {
     button.addEventListener("click", event => {
       addProductToCart(button.dataset.productName, event);
     });
   });
 
   initCard3DTilt();
+  initScrollReveal();
 }
 
 function normalizeProductName(name) {
@@ -151,6 +234,28 @@ function normalizeProductName(name) {
     .trim()
     .toLocaleLowerCase("id-ID");
 }
+
+function addSingleToCart(name, price, event) {
+  const productName = String(name || "").trim();
+  const productPrice = Number(price);
+
+  if (!productName || !Number.isFinite(productPrice) || productPrice < 0) {
+    return;
+  }
+
+  const key = normalizeProductName(productName);
+  if (!productsByName.has(key)) {
+    productsByName.set(key, {
+      name: productName,
+      price: productPrice,
+      stock: 99,
+      active: true
+    });
+  }
+
+  addProductToCart(productName, event);
+}
+window.addSingleToCart = addSingleToCart;
 
 // ========================================================
 // Navigasi mobile
@@ -821,3 +926,14 @@ function escapeHtml(value) {
     return entities[character];
   });
 }
+
+// Fallback otomatis jika ada gambar yang gagal dimuat dari jaringan
+window.addEventListener("error", event => {
+  if (event.target && event.target.tagName === "IMG") {
+    const img = event.target;
+    if (!img.dataset.fallbackApplied) {
+      img.dataset.fallbackApplied = "true";
+      img.src = "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&w=400&q=80";
+    }
+  }
+}, true);

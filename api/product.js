@@ -69,7 +69,8 @@ export default async function handler(req, res) {
         category: String(product.category || "").trim(),
         price: Number(product.price),
         stock: Math.max(0, Number(product.stock) || 0),
-        active: product.active !== false
+        active: product.active !== false,
+        image: product.image || product.photo || product.img || null
       }));
 
     return res.status(200).json({
