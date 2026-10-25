@@ -1,12 +1,15 @@
 // ========================================================
 // ROBS COOKIES
-// Keranjang, checkout melalui Vercel API, navigasi,
+// Produk dari Google Sheets melalui /api/products,
+// checkout melalui /api/checkout, keranjang, navigasi,
 // FAQ, scroll reveal, dan efek visual.
 // ========================================================
 
 const CHECKOUT_ENDPOINT = "/api/checkout";
+const PRODUCTS_ENDPOINT = "/api/products";
 
 let cartItems = [];
+let productsByName = new Map();
 
 document.addEventListener("DOMContentLoaded", () => {
   initMobileDrawer();
@@ -18,7 +21,136 @@ document.addEventListener("DOMContentLoaded", () => {
   initCard3DTilt();
   initScrollReveal();
   renderCartDrawer();
+  loadProducts();
 });
+
+// ========================================================
+// Sinkronisasi katalog dari database
+// ========================================================
+
+async function loadProducts() {
+  const grid = document.getElementById("productGrid");
+  const message = document.getElementById("productLoadMessage");
+
+  if (!grid) {
+    console.error('Elemen dengan id="productGrid" tidak ditemukan.');
+    return;
+  }
+
+  if (message) message.textContent = "";
+  grid.innerHTML = '<p class="product-loading">Memuat produk...</p>';
+
+  try {
+    const response = await fetch(PRODUCTS_ENDPOINT, {
+      method: "GET",
+      headers: {
+        Accept: "application/json"
+      },
+      cache: "no-store"
+    });
+
+    const result = await response.json();
+
+    if (
+      !response.ok ||
+      result.ok !== true ||
+      !Array.isArray(result.products)
+    ) {
+      throw new Error(result.error || "Produk gagal dimuat dari database.");
+    }
+
+    const products = result.products
+      .filter(product =>
+        product &&
+        String(product.name || "").trim() &&
+        Number.isFinite(Number(product.price)) &&
+        product.active !== false
+      )
+      .map(product => ({
+        name: String(product.name).trim(),
+        category: String(product.category || "").trim(),
+        price: Number(product.price),
+        stock: Math.max(0, Number(product.stock) || 0),
+        active: product.active !== false
+      }));
+
+    productsByName = new Map(
+      products.map(product => [
+        normalizeProductName(product.name),
+        product
+      ])
+    );
+
+    renderProducts(products);
+  } catch (error) {
+    console.error("Gagal memuat produk:", error);
+    grid.innerHTML = "";
+
+    if (message) {
+      message.textContent =
+        error.message || "Produk gagal dimuat. Silakan coba lagi.";
+    }
+  }
+}
+
+function renderProducts(products) {
+  const grid = document.getElementById("productGrid");
+  const message = document.getElementById("productLoadMessage");
+
+  if (!grid) return;
+
+  if (products.length === 0) {
+    grid.innerHTML = "";
+    if (message) message.textContent = "Belum ada produk aktif.";
+    return;
+  }
+
+  if (message) message.textContent = "";
+
+  grid.innerHTML = products.map(product => {
+    const soldOut = product.stock <= 0;
+
+    return `
+      <article class="product-item-card">
+        <div class="prod-img-box" aria-hidden="true"></div>
+
+        <div class="product-card-content">
+          <p class="product-category">${escapeHtml(product.category)}</p>
+          <h3 class="product-name">${escapeHtml(product.name)}</h3>
+          <p class="product-price">${formatRupiah(product.price)}</p>
+
+          <button
+            type="button"
+            class="add-to-cart-btn"
+            data-product-name="${escapeHtml(product.name)}"
+            ${soldOut ? "disabled" : ""}
+            aria-label="${
+              soldOut
+                ? `Stok ${escapeHtml(product.name)} habis`
+                : `Tambah ${escapeHtml(product.name)} ke keranjang`
+            }"
+          >
+            ${soldOut ? "Stok habis" : "+"}
+          </button>
+        </div>
+      </article>
+    `;
+  }).join("");
+
+  grid.querySelectorAll("[data-product-name]").forEach(button => {
+    button.addEventListener("click", event => {
+      addProductToCart(button.dataset.productName, event);
+    });
+  });
+
+  initCard3DTilt();
+}
+
+function normalizeProductName(name) {
+  return String(name || "")
+    .trim()
+    .toLocaleLowerCase("id-ID");
+}
 
 // ========================================================
 // Navigasi mobile
@@ -90,19 +222,9 @@ function initCartDrawer() {
 }
 
 // ========================================================
-// Checkout melalui endpoint API Vercel.
-//
-// Body yang dikirim ke /api/checkout:
-// {
-//   action: "createOrder",
-//   order: {
-//     customer: "...",
-//     buyerEmail: "...",
-//     items: [{ name: "...", qty: 1 }]
-//   }
-// }
-//
-// api/checkout.js meneruskan objek ini ke Apps Script.
+// Checkout
+// Apps Script menghitung ulang harga dan stok dari sheet.
+// Browser hanya mengirim nama produk dan jumlah.
 // ========================================================
 
 function initCheckoutForm() {
@@ -156,8 +278,6 @@ function initCheckoutForm() {
         headers: {
           "Content-Type": "application/json"
         },
-
-        // Jangan JSON.stringify dua kali.
         body: JSON.stringify(payload)
       });
 
@@ -168,7 +288,7 @@ function initCheckoutForm() {
         result = JSON.parse(responseText);
       } catch {
         throw new Error(
-          "Respons server tidak valid. Periksa konfigurasi endpoint Vercel."
+          "Respons server tidak valid. Periksa konfigurasi Vercel dan Apps Script."
         );
       }
 
@@ -178,15 +298,13 @@ function initCheckoutForm() {
         );
       }
 
-      const orderId =
-        result.order && result.order.id
-          ? ` Nomor pesanan: ${result.order.id}.`
-          : "";
+      const orderId = result.order && result.order.id
+        ? ` Nomor pesanan: ${result.order.id}.`
+        : "";
 
-      const emailMessage =
-        result.emailSent === false
-          ? " Pesanan tersimpan, tetapi email konfirmasi gagal dikirim."
-          : " Konfirmasi akan dikirim ke email Anda.";
+      const emailMessage = result.emailSent === false
+        ? " Pesanan tersimpan, tetapi email konfirmasi gagal dikirim."
+        : " Konfirmasi akan dikirim ke email Anda.";
 
       showCheckoutMessage(
         `Pesanan berhasil dibuat.${orderId}${emailMessage}`,
@@ -233,9 +351,7 @@ function showCheckoutMessage(message, type) {
   if (!message) return;
 
   element.classList.add("is-visible");
-  element.classList.add(
-    type === "success" ? "is-success" : "is-error"
-  );
+  element.classList.add(type === "success" ? "is-success" : "is-error");
 }
 
 // ========================================================
@@ -376,7 +492,7 @@ function initHero3DParallax() {
 }
 
 // ========================================================
-// Efek tilt kartu
+// Efek tilt kartu produk
 // ========================================================
 
 function initCard3DTilt() {
@@ -385,6 +501,9 @@ function initCard3DTilt() {
   );
 
   cards.forEach(card => {
+    if (card.dataset.tiltInitialized === "true") return;
+    card.dataset.tiltInitialized = "true";
+
     const glare = card.querySelector(".card-glare");
     const imageBox = card.querySelector(".prod-img-box");
 
@@ -411,9 +530,7 @@ function initCard3DTilt() {
           "rgba(255, 255, 255, 0.45) 0%, transparent 65%)";
       }
 
-      if (imageBox) {
-        imageBox.style.transform = "translateZ(20px)";
-      }
+      if (imageBox) imageBox.style.transform = "translateZ(20px)";
     });
 
     card.addEventListener("mouseleave", () => {
@@ -421,13 +538,8 @@ function initCard3DTilt() {
         "perspective(800px) rotateX(0deg) rotateY(0deg) " +
         "translateY(0) scale3d(1, 1, 1)";
 
-      if (imageBox) {
-        imageBox.style.transform = "translateZ(0)";
-      }
-
-      if (glare) {
-        glare.style.background = "transparent";
-      }
+      if (imageBox) imageBox.style.transform = "translateZ(0)";
+      if (glare) glare.style.background = "transparent";
     });
   });
 }
@@ -441,9 +553,7 @@ function initScrollReveal() {
   if (!elements.length) return;
 
   if (!("IntersectionObserver" in window)) {
-    elements.forEach(element => {
-      element.classList.add("is-visible");
-    });
+    elements.forEach(element => element.classList.add("is-visible"));
     return;
   }
 
@@ -469,28 +579,33 @@ function initScrollReveal() {
 // Operasi keranjang
 // ========================================================
 
-function addSingleToCart(name, price, event) {
-  const productName = String(name || "").trim();
-  const productPrice = Number(price);
+function addProductToCart(name, event) {
+  const key = normalizeProductName(name);
+  const product = productsByName.get(key);
 
-  if (
-    !productName ||
-    !Number.isFinite(productPrice) ||
-    productPrice < 0
-  ) {
+  if (!product || !product.active) return;
+
+  const existingItem = cartItems.find(
+    item => normalizeProductName(item.name) === key
+  );
+
+  const currentQty = existingItem ? existingItem.qty : 0;
+
+  if (currentQty >= product.stock) {
+    showCheckoutMessage(
+      `Stok ${product.name} tidak mencukupi.`,
+      "error"
+    );
     return;
   }
 
-  const existingItem = cartItems.find(
-    item => item.name === productName
-  );
-
   if (existingItem) {
     existingItem.qty += 1;
+    existingItem.price = product.price;
   } else {
     cartItems.push({
-      name: productName,
-      price: productPrice,
+      name: product.name,
+      price: product.price,
       qty: 1
     });
   }
@@ -512,12 +627,24 @@ function updateCartQty(index, change) {
   const item = cartItems[index];
   if (!item) return;
 
-  item.qty += Number(change) || 0;
+  const product = productsByName.get(normalizeProductName(item.name));
+  const nextQty = item.qty + (Number(change) || 0);
 
-  if (item.qty <= 0) {
+  if (nextQty <= 0) {
     cartItems.splice(index, 1);
+    renderCartDrawer();
+    return;
   }
 
+  if (product && nextQty > product.stock) {
+    showCheckoutMessage(
+      `Stok ${product.name} tidak mencukupi.`,
+      "error"
+    );
+    return;
+  }
+
+  item.qty = nextQty;
   renderCartDrawer();
 }
 
@@ -529,11 +656,7 @@ function renderCartDrawer() {
 
   if (!listElement) return;
 
-  const count = cartItems.reduce(
-    (sum, item) => sum + item.qty,
-    0
-  );
-
+  const count = cartItems.reduce((sum, item) => sum + item.qty, 0);
   const subtotal = cartItems.reduce(
     (sum, item) => sum + item.price * item.qty,
     0
