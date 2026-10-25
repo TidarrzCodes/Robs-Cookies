@@ -1,0 +1,695 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <title>ROBS Cookies — Cookies Artisanal Premium</title>
+  <meta
+    name="description"
+    content="Cookies artisanal premium yang dipanggang segar setiap hari."
+  >
+  <meta name="theme-color" content="#FAF7F2">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Plus+Jakarta+Sans:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+
+<body>
+  <header class="navbar">
+    <div class="nav-container">
+      <a class="brand-logo" href="#home" aria-label="ROBS Cookies beranda">
+        <span class="logo-leaf" aria-hidden="true">🍪</span>
+        <span class="logo-text">
+          <span class="logo-title">ROBS COOKIES</span>
+          <span class="logo-tagline">GOOD FOOD, GOOD LIFE</span>
+        </span>
+      </a>
+
+      <nav class="nav-menu" aria-label="Navigasi utama">
+        <a class="nav-item active" href="#home">Home</a>
+        <a class="nav-item" href="#categories">Categories</a>
+        <a class="nav-item" href="#shop">Shop</a>
+        <a class="nav-item" href="#recipes">Ingredients</a>
+        <a class="nav-item" href="#about">About</a>
+      </nav>
+
+      <div class="nav-icons">
+        <button
+          id="cartOpenBtn"
+          class="icon-btn cart-btn"
+          type="button"
+          aria-label="Buka keranjang"
+        >
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <path
+              d="M3 4h2l2.2 10.1a2 2 0 0 0 2 1.6h7.9a2 2 0 0 0 1.9-1.4L21 8H6"
+              stroke="currentColor"
+              stroke-width="1.8"
+              stroke-linecap="round"
+              stroke-linejoin="round"
+            />
+            <circle cx="10" cy="20" r="1.4" fill="currentColor"/>
+            <circle cx="18" cy="20" r="1.4" fill="currentColor"/>
+          </svg>
+          <span id="cartBadge" class="cart-badge">0</span>
+        </button>
+
+        <button
+          id="mobileMenuBtn"
+          class="mobile-toggle"
+          type="button"
+          aria-label="Buka menu"
+          aria-controls="mobileDrawer"
+          aria-expanded="false"
+        >
+          <svg viewBox="0 0 24 24" width="24" height="24" fill="none" aria-hidden="true">
+            <path
+              d="M4 6h16M4 12h16M4 18h16"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+            />
+          </svg>
+        </button>
+      </div>
+
+      <nav
+        id="mobileDrawer"
+        class="mobile-drawer"
+        aria-label="Navigasi mobile"
+      >
+        <a class="mobile-link active" href="#home">Home</a>
+        <a class="mobile-link" href="#categories">Categories</a>
+        <a class="mobile-link" href="#shop">Shop</a>
+        <a class="mobile-link" href="#recipes">Ingredients</a>
+        <a class="mobile-link" href="#about">About Us</a>
+        <div class="mobile-divider"></div>
+        <a
+          class="mobile-staff-btn"
+          href="https://wa.me/6289563491488"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          Hubungi admin
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section id="home" class="hero-section">
+      <div class="hero-container">
+        <div class="hero-copy reveal-on-scroll">
+          <p class="eyebrow-tag">
+            <span class="leaf-icon" aria-hidden="true">🍃</span>
+            Fresh Ingredients, Delivered
+          </p>
+
+          <h1 class="hero-heading">
+            Delicious Cookies
+            <span class="heading-accent">For Every Mood</span>
+          </h1>
+
+          <p class="hero-description">
+            Nikmati cookies artisanal premium yang dipanggang segar setiap
+            pagi dengan bahan pilihan. Dibuat untuk menemani momen terbaik
+            Anda.
+          </p>
+
+          <div class="hero-actions">
+            <a class="btn-orange" href="#shop">Shop now</a>
+            <a class="btn-ghost" href="#recipes">
+              <span class="play-circle" aria-hidden="true">▶</span>
+              Explore ingredients
+            </a>
+          </div>
+
+          <div class="hero-features-bar">
+            <div class="feature-badge">
+              <span class="feature-icon" aria-hidden="true">🍪</span>
+              <span class="feature-text">
+                <strong>100% Fresh</strong>
+                <p>Products</p>
+              </span>
+            </div>
+
+            <div class="feature-badge">
+              <span class="feature-icon" aria-hidden="true">🚚</span>
+              <span class="feature-text">
+                <strong>Fast Delivery</strong>
+                <p>Seluruh Indonesia</p>
+              </span>
+            </div>
+
+            <div class="feature-badge">
+              <span class="feature-icon" aria-hidden="true">🧈</span>
+              <span class="feature-text">
+                <strong>Pure Butter</strong>
+                <p>Bahan pilihan</p>
+              </span>
+            </div>
+
+            <div class="feature-badge">
+              <span class="feature-icon" aria-hidden="true">🔒</span>
+              <span class="feature-text">
+                <strong>Easy Order</strong>
+                <p>Konfirmasi email</p>
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-image-col reveal-on-scroll delay-2">
+          <div class="platter-wrapper">
+            <div class="platter-aura"></div>
+
+            <div class="floating-badge badge-rating" data-depth="1.5">
+              <span class="badge-star-icon">★</span>
+              <span class="badge-text-box">
+                <strong>4.9 / 5.0</strong>
+                <span>1.200+ ulasan puas</span>
+              </span>
+            </div>
+
+            <div class="floating-badge badge-oven" data-depth="1.2">
+              <span class="badge-emoji-icon">🔥</span>
+              <span class="badge-text-box">
+                <strong>Freshly baked</strong>
+                <span>Setiap pagi</span>
+              </span>
+            </div>
+
+            <div class="floating-badge badge-butter" data-depth="1.7">
+              <span class="badge-emoji-icon">🧈</span>
+              <span class="badge-text-box">
+                <strong>100% Pure Butter</strong>
+                <span>Rasa autentik</span>
+              </span>
+            </div>
+
+            <span class="floating-crumb crumb-1" data-depth="1.2" aria-hidden="true">✨</span>
+            <span class="floating-crumb crumb-2" data-depth="2" aria-hidden="true">🍪</span>
+            <span class="floating-crumb crumb-3" data-depth="1.4" aria-hidden="true">🍫</span>
+
+            <div class="platter-dish">
+              <img
+                class="platter-img"
+                src="https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&w=900&q=85"
+                alt="Aneka cookies cokelat ROBS Cookies"
+              >
+              <div class="dish-rim-overlay"></div>
+              <div id="dishGlare" class="dish-glare"></div>
+            </div>
+
+            <div class="floating-promo-card" data-depth="1.1">
+              <div class="promo-text-side">
+                <span class="special-label">SPECIAL OFFER</span>
+                <h4>Diskon 20%<br>pesanan pertama</h4>
+                <a class="btn-promo-small" href="#shop">ORDER NOW</a>
+              </div>
+              <div class="promo-img-side">
+                <img
+                  class="bag-photo"
+                  src="https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=240&q=80"
+                  alt="Cookies cokelat"
+                >
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="categories" class="category-section">
+      <div class="section-container">
+        <div class="section-title-row center reveal-on-scroll">
+          <p class="eyebrow-tag">Temukan favoritmu</p>
+          <h2 class="serif-title">Shop By Category</h2>
+        </div>
+
+        <div class="category-grid">
+          <a class="cat-card reveal-on-scroll" href="#shop">
+            <span class="cat-circle">
+              <img
+                class="cat-photo"
+                src="https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&w=300&q=80"
+                alt="Original Butter cookies"
+                loading="lazy"
+              >
+            </span>
+            <span class="cat-name">Original Butter</span>
+          </a>
+
+          <a class="cat-card reveal-on-scroll delay-1" href="#shop">
+            <span class="cat-circle">
+              <img
+                class="cat-photo"
+                src="https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=300&q=80"
+                alt="Double Choco cookies"
+                loading="lazy"
+              >
+            </span>
+            <span class="cat-name">Double Choco</span>
+          </a>
+
+          <a class="cat-card reveal-on-scroll delay-2" href="#shop">
+            <span class="cat-circle">
+              <img
+                class="cat-photo"
+                src="https://images.unsplash.com/photo-1616541823729-00fe0aacd32c?auto=format&fit=crop&w=300&q=80"
+                alt="Red Velvet cookies"
+                loading="lazy"
+              >
+            </span>
+            <span class="cat-name">Red Velvet</span>
+          </a>
+
+          <a class="cat-card reveal-on-scroll delay-3" href="#shop">
+            <span class="cat-circle">
+              <img
+                class="cat-photo"
+                src="https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=300&q=80"
+                alt="Matcha cookies"
+                loading="lazy"
+              >
+            </span>
+            <span class="cat-name">Matcha Uji</span>
+          </a>
+
+          <a class="cat-card reveal-on-scroll delay-4" href="#shop">
+            <span class="cat-circle">
+              <img
+                class="cat-photo"
+                src="https://images.unsplash.com/photo-1548907040-4d42daa3d173?auto=format&fit=crop&w=300&q=80"
+                alt="Gift hampers"
+                loading="lazy"
+              >
+            </span>
+            <span class="cat-name">Gift Hampers</span>
+          </a>
+
+          <a class="cat-card reveal-on-scroll delay-5" href="#shop">
+            <span class="cat-circle">
+              <img
+                class="cat-photo"
+                src="https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=300&q=80"
+                alt="Box bundling cookies"
+                loading="lazy"
+              >
+            </span>
+            <span class="cat-name">Box Bundling</span>
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <section id="shop" class="products-section">
+      <div class="section-container">
+        <div class="section-title-row reveal-on-scroll">
+          <div>
+            <p class="eyebrow-tag">Dibuat segar setiap hari</p>
+            <h2 class="serif-title">Best Selling Products</h2>
+          </div>
+          <a class="link-view-all" href="#shop">Pilihan cookies →</a>
+        </div>
+
+        <div class="products-layout-grid">
+          <div class="products-left-col">
+            <div class="products-scroll-grid">
+              <article class="product-item-card reveal-on-scroll">
+                <div class="card-glare"></div>
+                <div class="prod-img-box">
+                  <img
+                    class="prod-photo"
+                    src="https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&w=400&q=80"
+                    alt="Original Classic Cookie"
+                    loading="lazy"
+                  >
+                </div>
+                <div class="prod-info">
+                  <h4>Original Classic Cookie</h4>
+                  <div class="prod-bottom">
+                    <span class="prod-price">Rp 5.000</span>
+                    <button
+                      class="btn-cart-add"
+                      type="button"
+                      aria-label="Tambah Original Classic Cookie ke keranjang"
+                      onclick="addSingleToCart('Original Classic Cookie', 5000, event)"
+                    >+</button>
+                  </div>
+                </div>
+              </article>
+
+              <article class="product-item-card reveal-on-scroll delay-1">
+                <div class="card-glare"></div>
+                <div class="prod-img-box">
+                  <img
+                    class="prod-photo"
+                    src="https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=400&q=80"
+                    alt="Double Choco Melt"
+                    loading="lazy"
+                  >
+                </div>
+                <div class="prod-info">
+                  <h4>Double Choco Melt</h4>
+                  <div class="prod-bottom">
+                    <span class="prod-price">Rp 6.000</span>
+                    <button
+                      class="btn-cart-add"
+                      type="button"
+                      aria-label="Tambah Double Choco Melt ke keranjang"
+                      onclick="addSingleToCart('Double Choco Melt', 6000, event)"
+                    >+</button>
+                  </div>
+                </div>
+              </article>
+
+              <article class="product-item-card reveal-on-scroll delay-2">
+                <div class="card-glare"></div>
+                <div class="prod-img-box">
+                  <img
+                    class="prod-photo"
+                    src="https://images.unsplash.com/photo-1616541823729-00fe0aacd32c?auto=format&fit=crop&w=400&q=80"
+                    alt="Red Velvet Creamy"
+                    loading="lazy"
+                  >
+                </div>
+                <div class="prod-info">
+                  <h4>Red Velvet Creamy</h4>
+                  <div class="prod-bottom">
+                    <span class="prod-price">Rp 6.000</span>
+                    <button
+                      class="btn-cart-add"
+                      type="button"
+                      aria-label="Tambah Red Velvet Creamy ke keranjang"
+                      onclick="addSingleToCart('Red Velvet Creamy', 6000, event)"
+                    >+</button>
+                  </div>
+                </div>
+              </article>
+
+              <article class="product-item-card reveal-on-scroll delay-3">
+                <div class="card-glare"></div>
+                <div class="prod-img-box">
+                  <img
+                    class="prod-photo"
+                    src="https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=400&q=80"
+                    alt="Matcha White Choco"
+                    loading="lazy"
+                  >
+                </div>
+                <div class="prod-info">
+                  <h4>Matcha White Choco</h4>
+                  <div class="prod-bottom">
+                    <span class="prod-price">Rp 6.000</span>
+                    <button
+                      class="btn-cart-add"
+                      type="button"
+                      aria-label="Tambah Matcha White Choco ke keranjang"
+                      onclick="addSingleToCart('Matcha White Choco', 6000, event)"
+                    >+</button>
+                  </div>
+                </div>
+              </article>
+
+              <article class="product-item-card reveal-on-scroll delay-4">
+                <div class="card-glare"></div>
+                <div class="prod-img-box">
+                  <img
+                    class="prod-photo"
+                    src="https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=400&q=80"
+                    alt="Butter Honey Glaze"
+                    loading="lazy"
+                  >
+                </div>
+                <div class="prod-info">
+                  <h4>Butter Honey Glaze</h4>
+                  <div class="prod-bottom">
+                    <span class="prod-price">Rp 5.500</span>
+                    <button
+                      class="btn-cart-add"
+                      type="button"
+                      aria-label="Tambah Butter Honey Glaze ke keranjang"
+                      onclick="addSingleToCart('Butter Honey Glaze', 5500, event)"
+                    >+</button>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </div>
+
+          <aside class="products-banner-col">
+            <div class="vertical-promo-banner reveal-on-scroll">
+              <img
+                class="banner-bg-img"
+                src="https://images.unsplash.com/photo-1548907040-4d42daa3d173?auto=format&fit=crop&w=800&q=85"
+                alt="Cookies untuk hadiah"
+                loading="lazy"
+              >
+              <div class="banner-overlay"></div>
+              <div class="banner-content">
+                <span class="banner-pill">LIMITED TIME OFFER</span>
+                <h3 class="banner-title">Flat 25% Off<br>Box Bundling</h3>
+                <a class="btn-orange" href="#shop">Shop now</a>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </div>
+    </section>
+
+    <section id="recipes" class="recipes-section">
+      <div class="section-container">
+        <div class="section-title-row center reveal-on-scroll">
+          <p class="eyebrow-tag">Bahan terbaik, rasa istimewa</p>
+          <h2 class="serif-title">Explore Artisanal Ingredients</h2>
+        </div>
+
+        <div class="recipes-grid">
+          <article class="recipe-card reveal-on-scroll">
+            <div class="recipe-icon" aria-hidden="true">🧈</div>
+            <h3>100% Pure Butter</h3>
+            <p>
+              Kami menggunakan mentega pilihan untuk aroma dan cita rasa
+              cookies yang khas.
+            </p>
+          </article>
+
+          <article class="recipe-card reveal-on-scroll delay-1">
+            <div class="recipe-icon" aria-hidden="true">🍫</div>
+            <h3>Belgian Dark Chocolate</h3>
+            <p>
+              Cokelat pekat dengan sensasi lumer yang cocok dipadukan
+              bersama adonan cookies.
+            </p>
+          </article>
+
+          <article class="recipe-card reveal-on-scroll delay-2">
+            <div class="recipe-icon" aria-hidden="true">🍵</div>
+            <h3>Organic Japanese Matcha</h3>
+            <p>
+              Matcha dengan aroma khas yang memberikan rasa seimbang dan
+              warna alami.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="about" class="faq-section">
+      <div class="section-container faq-container">
+        <div class="section-title-row center reveal-on-scroll">
+          <p class="eyebrow-tag">Kami siap membantu</p>
+          <h2 class="serif-title">Frequently Asked Questions</h2>
+          <p class="section-subtitle">
+            Informasi seputar penyimpanan, pemanasan, dan pengiriman cookies.
+          </p>
+        </div>
+
+        <div class="accordion-list">
+          <article class="acc-item reveal-on-scroll">
+            <button class="acc-trigger" type="button" aria-expanded="false">
+              Berapa lama daya tahan simpan cookies?
+              <span class="acc-icon" aria-hidden="true">⌄</span>
+            </button>
+            <div class="acc-content">
+              Simpan di wadah kedap udara dan tempat sejuk. Untuk ketahanan
+              terbaik, ikuti petunjuk penyimpanan pada kemasan.
+            </div>
+          </article>
+
+          <article class="acc-item reveal-on-scroll delay-1">
+            <button class="acc-trigger" type="button" aria-expanded="false">
+              Bagaimana cara memanaskan cookies?
+              <span class="acc-icon" aria-hidden="true">⌄</span>
+            </button>
+            <div class="acc-content">
+              Hangatkan sebentar menggunakan microwave atau oven. Awasi
+              prosesnya agar tekstur cookies tetap terjaga.
+            </div>
+          </article>
+
+          <article class="acc-item reveal-on-scroll delay-2">
+            <button class="acc-trigger" type="button" aria-expanded="false">
+              Bagaimana cara mengetahui status pesanan?
+              <span class="acc-icon" aria-hidden="true">⌄</span>
+            </button>
+            <div class="acc-content">
+              Setelah pesanan berhasil, cek email yang Anda masukkan saat
+              checkout. Admin juga dapat memperbarui status pesanan melalui
+              sistem.
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="section-container">
+      <div class="footer-grid">
+        <div>
+          <a class="brand-logo footer-logo" href="#home">
+            <span class="logo-leaf" aria-hidden="true">🍪</span>
+            <span class="logo-text">
+              <span class="logo-title">ROBS COOKIES</span>
+              <span class="logo-tagline">GOOD FOOD, GOOD LIFE</span>
+            </span>
+          </a>
+
+          <p class="footer-bio">
+            Cookies artisanal yang dibuat dengan bahan pilihan dan
+            dipanggang segar setiap hari.
+          </p>
+
+          <div class="footer-contacts">
+            <p>📍 Bogor, Indonesia</p>
+            <p>
+              💬 WhatsApp:
+              <a href="https://wa.me/6289563491488">0895-6349-1488</a>
+            </p>
+          </div>
+        </div>
+
+        <div class="footer-col">
+          <h4>Navigation</h4>
+          <ul>
+            <li><a href="#home">Home</a></li>
+            <li><a href="#categories">Categories</a></li>
+            <li><a href="#shop">Shop Online</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-col">
+          <h4>Customer Care</h4>
+          <ul>
+            <li><a href="#about">FAQ</a></li>
+            <li><a href="#recipes">Bahan &amp; Resep</a></li>
+            <li><a href="https://wa.me/6289563491488">Hubungi Admin</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="footer-bottom-bar">
+        <div class="bottom-flex">
+          <span>© 2026 ROBS Cookies. All rights reserved.</span>
+          <span class="footer-credit">
+            Developed by <strong>RaditNex</strong>
+          </span>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <div id="cartOverlay" class="cart-drawer-overlay" aria-hidden="true">
+    <aside
+      class="cart-drawer"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="drawerTitle"
+    >
+      <div class="drawer-header">
+        <h2 id="drawerTitle">
+          Keranjang (<span id="drawerCount">0</span>)
+        </h2>
+        <button
+          id="closeCartBtn"
+          class="close-drawer-btn"
+          type="button"
+          aria-label="Tutup keranjang"
+        >×</button>
+      </div>
+
+      <div id="drawerItemsList" class="drawer-items"></div>
+
+      <div class="drawer-footer">
+        <div class="drawer-total-row">
+          <strong>Subtotal perkiraan</strong>
+          <strong id="drawerSubtotal">Rp 0</strong>
+        </div>
+
+        <p class="checkout-note">
+          Total resmi dan ketersediaan stok akan dihitung ulang dari daftar
+          produk di sistem saat pesanan dikirim.
+        </p>
+
+        <form id="checkoutForm" class="checkout-form">
+          <label for="checkoutName">Nama lengkap</label>
+          <input
+            id="checkoutName"
+            name="customer"
+            type="text"
+            autocomplete="name"
+            maxlength="100"
+            required
+            placeholder="Nama Anda"
+          >
+
+          <label for="checkoutEmail">Email</label>
+          <input
+            id="checkoutEmail"
+            name="buyerEmail"
+            type="email"
+            autocomplete="email"
+            maxlength="200"
+            required
+            placeholder="nama@email.com"
+          >
+
+          <p
+            id="checkoutMessage"
+            class="checkout-message"
+            role="status"
+            aria-live="polite"
+          ></p>
+
+          <button
+            id="checkoutSubmitBtn"
+            class="btn-orange w-full"
+            type="submit"
+          >
+            KIRIM PESANAN
+          </button>
+
+          <a
+            class="checkout-whatsapp-link"
+            href="https://wa.me/6289563491488"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Tanya admin via WhatsApp
+          </a>
+        </form>
+      </div>
+    </aside>
+  </div>
+</body>
+</html>
