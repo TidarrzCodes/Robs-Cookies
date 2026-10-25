@@ -9,48 +9,6 @@ const CHECKOUT_ENDPOINT = "/api/checkout";
 const PRODUCTS_ENDPOINT = "/api/products";
 const FALLBACK_PRODUCTS_ENDPOINT = "/api/product";
 
-const DEFAULT_PRODUCTS = [
-  {
-    name: "Original Classic Cookie",
-    category: "Original Butter",
-    price: 5000,
-    stock: 50,
-    active: true,
-    image: "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&w=400&q=80"
-  },
-  {
-    name: "Double Choco Melt",
-    category: "Chocolate",
-    price: 6000,
-    stock: 50,
-    active: true,
-    image: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c?auto=format&fit=crop&w=400&q=80"
-  },
-  {
-    name: "Red Velvet Creamy",
-    category: "Red Velvet",
-    price: 6000,
-    stock: 50,
-    active: true,
-    image: "https://images.unsplash.com/photo-1616541823729-00fe0aacd32c?auto=format&fit=crop&w=400&q=80"
-  },
-  {
-    name: "Matcha White Choco",
-    category: "Special",
-    price: 6000,
-    stock: 50,
-    active: true,
-    image: "https://images.unsplash.com/photo-1558961363-fa8fdf82db35?auto=format&fit=crop&w=400&q=80"
-  },
-  {
-    name: "Butter Honey Glaze",
-    category: "Special",
-    price: 5500,
-    stock: 50,
-    active: true,
-    image: "https://images.unsplash.com/photo-1590080875515-8a3a8dc5735e?auto=format&fit=crop&w=400&q=80"
-  }
-];
 
 let cartItems = [];
 let productsByName = new Map();
