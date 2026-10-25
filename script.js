@@ -1,22 +1,16 @@
 // ========================================================
-// ROBS COOKIES
-// Produk dari Google Sheets melalui /api/products,
+// MOON SOFTCOOKIES
+// Produk dari Google Sheets melalui /api/product,
 // checkout melalui /api/checkout, keranjang, navigasi,
 // FAQ, scroll reveal, dan efek visual.
 // ========================================================
 
 const CHECKOUT_ENDPOINT = "/api/checkout";
-const PRODUCTS_ENDPOINT = "/api/products";
-const FALLBACK_PRODUCTS_ENDPOINT = "/api/product";
-
+const PRODUCTS_ENDPOINT = "/api/product";
+const FALLBACK_PRODUCTS_ENDPOINT = "/api/products";
 
 let cartItems = [];
 let productsByName = new Map();
-
-// Seed awal agar data produk langsung siap digunakan
-DEFAULT_PRODUCTS.forEach(product => {
-  productsByName.set(normalizeProductName(product.name), product);
-});
 
 document.addEventListener("DOMContentLoaded", () => {
   initMobileDrawer();
@@ -44,6 +38,14 @@ async function loadProducts() {
     return;
   }
 
+  if (message) message.textContent = "";
+  grid.innerHTML = `
+    <div class="product-loading">
+      <i class="fa-solid fa-spinner fa-spin" style="margin-right: 8px;"></i>
+      Memuat produk dari database...
+    </div>
+  `;
+
   try {
     let response = await fetch(PRODUCTS_ENDPOINT, {
       method: "GET",
@@ -63,14 +65,10 @@ async function loadProducts() {
       });
     }
 
-    if (!response.ok) {
-      throw new Error(`Gagal memuat produk (status ${response.status})`);
-    }
-
     const result = await response.json();
 
-    if (result.ok !== true || !Array.isArray(result.products)) {
-      throw new Error(result.error || "Produk gagal dimuat dari database.");
+    if (!response.ok || result.ok !== true || !Array.isArray(result.products)) {
+      throw new Error(result.error || `Gagal memuat produk (status ${response.status})`);
     }
 
     const products = result.products
@@ -89,17 +87,22 @@ async function loadProducts() {
         image: product.image || product.photo || product.img || null
       }));
 
-    if (products.length > 0) {
-      productsByName = new Map(
-        products.map(product => [
-          normalizeProductName(product.name),
-          product
-        ])
-      );
-      renderProducts(products);
-    }
+    productsByName = new Map(
+      products.map(product => [
+        normalizeProductName(product.name),
+        product
+      ])
+    );
+
+    renderProducts(products);
   } catch (error) {
-    console.warn("Sinkronisasi katalog API tidak tersedia, menggunakan katalog default:", error.message);
+    console.error("Gagal memuat produk dari database:", error);
+    grid.innerHTML = `
+      <div class="product-loading is-error">
+        <i class="fa-solid fa-circle-exclamation" style="margin-right: 8px;"></i>
+        ${escapeHtml(error.message || "Produk gagal dimuat dari database.")}
+      </div>
+    `;
   }
 }
 
@@ -194,24 +197,7 @@ function normalizeProductName(name) {
 }
 
 function addSingleToCart(name, price, event) {
-  const productName = String(name || "").trim();
-  const productPrice = Number(price);
-
-  if (!productName || !Number.isFinite(productPrice) || productPrice < 0) {
-    return;
-  }
-
-  const key = normalizeProductName(productName);
-  if (!productsByName.has(key)) {
-    productsByName.set(key, {
-      name: productName,
-      price: productPrice,
-      stock: 99,
-      active: true
-    });
-  }
-
-  addProductToCart(productName, event);
+  addProductToCart(name, event);
 }
 window.addSingleToCart = addSingleToCart;
 

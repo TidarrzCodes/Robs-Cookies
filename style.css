@@ -1,5 +1,5 @@
 /* ========================================================  
-   ROBS COOKIES — LANDING PAGE STYLES  
+   MOON SOFTCOOKIES - LANDING PAGE STYLES  
 ======================================================== */  
 
 :root {  
@@ -1083,14 +1083,25 @@ section[id] {
 .product-load-message,
 .product-loading {
   grid-column: 1 / -1;
-  text-align: center;
-  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 180px;
+  padding: 32px 20px;
+  border: 1px dashed var(--border-accent);
+  border-radius: var(--radius-md);
+  background: rgba(255, 255, 255, 0.7);
   color: var(--text-muted);
   font-size: 0.9375rem;
   font-weight: 600;
+  text-align: center;
 }
 
+.product-loading.is-error,
 .product-load-message.is-error {
+  border-color: rgba(220, 38, 38, 0.3);
+  background: #FEF2F2;
   color: #DC2626;
 }
 
